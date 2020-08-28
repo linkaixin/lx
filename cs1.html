@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://jss1.99.com.cn/global/jq/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            center();
+            //如果屏幕大小改变，自动居中
+            $(window).resize(center);
+            //让div绝对居中
+            function center(){
+                //获取屏幕的高度和宽度
+                var winheight = $(document).height();
+                var winwidth = $(document).width();
+                //获取div的高度和宽度
+                var divheight = $(".dialog").height();
+                var divwidth = $(".dialog").width();
+                //计算距左和距顶的距离 (屏幕-div)/2
+                var _left = (winwidth-divwidth)/2;
+                var _top = (winheight-divheight)/2;
+                //把left和top赋给div
+                $(".dialog").css({"left":_left+"px","top":_top+"px"});
+            }
+
+            //想要实现鼠标拖拽，必须是在鼠标按下之后，松开之前，所以需要绑定鼠标按下事件
+            $(".dialog .d_head").mousedown(function(ev){
+                //获取点击时刻的X轴坐标和Y坐标(前一个获取不到就获取后一个)
+                var dx = ev.clientX||ev.pageX;
+                var dy = ev.clientY||ev.pageY;
+                //获取div距左和距顶的距离，offset是边距
+                var dialogleft = $(".dialog").offset().left;
+                var dialogtop = $(".dialog").offset().top;
+                //定义一个开关，默认鼠标点击之后开启
+                var flag = true;
+                //绑定鼠标移动事件，要在全屏移动，所以用绑定document
+                $(document).mousemove(function(e){
+                    if(flag){
+                        //鼠标移动后的X轴坐标和Y轴坐标
+                        var mx = e.clientX||e.pageX;
+                        var my = e.clientY||e.pageY;
+                        //用移动后的X轴和Y轴坐标减去点击时刻的坐标再加上原先div距左和距顶的距离
+                        var _left = mx-dx+dialogleft;
+                        var _top = my-dy+dialogtop;
+                        //重新为div的left和top赋值
+                        $(".dialog").css({"left":_left+"px","top":_top+"px"});
+                    }
+
+                }).mouseup(function(){
+                    flag = false;
+                })
+            })
+        })
+
+    </script>
+    <style>
+        body{
+            margin: 0px;
+            padding: 0px;
+        }
+        html,body{
+            height:100%;
+        }
+        .dialog{
+            width: 500px;
+            height: 300px;
+            box-shadow:6px 6px 15px #e662ce;
+            position: absolute;
+            background:#cecece;
+            z-index: 9;
+        }
+        .dialog .d_head{
+            height: 40px;
+            border-bottom: 1px solid grey;
+            line-height: 40px;
+            padding-left: 40%;
+            color:#dfdfdf;
+            background:linear-gradient(90deg,#000000,#ffffff);
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+<div class="dialog">
+    <div class="d_head">小标题</div>
+</div>
+</body>
